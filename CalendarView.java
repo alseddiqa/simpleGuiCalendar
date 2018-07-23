@@ -1,15 +1,24 @@
 package simpleGuiCalendar;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -20,180 +29,362 @@ import javax.swing.JTextField;
 
 public class CalendarView extends JFrame {
 
-	public CalendarView()
-	{
-		this.setSize(1000 , 1000);
-		setScreen();
+	GregorianCalendar today;
+	JPanel buttonPanel;
+	JPanel calendarPanel;
+	JPanel entirePanel;
+	JTextField titleTextField;
+	JTextField dateTextFeild;
+	JTextField timeFromTextFeild;
+	JTextField timeToTextField;
+	JComponent eventField;
+	JPanel areaOfDay;
+	JPanel dayArea;
+	JButton lastClickedButton = null;
+
+	public CalendarView(GregorianCalendar cal) {
+		this.setSize(850, 700);
+		setScreen(cal);
 	}
 
-	private void setScreen() {
+	private void setScreen(GregorianCalendar cal) {
 		// TODO Auto-generated method stub
-		
-		JPanel buttonPanel = new JPanel();
+
+		createTopButtonsPanel();
+
+
+		calendarPanel = new JPanel();
+		today = cal;
+		getCalendarView(today);
+		calendarPanel.add(entirePanel);
+
+		eventField = getEventField();
+		eventField.setVisible(false);
+
+		areaOfDay = new JPanel();
+		setDayArea(today);
+		areaOfDay.add(dayArea);
+
+//		next.addActionListener(new ActionListener() {
+//
+//			@Override
+//			public void actionPerformed(ActionEvent arg0) {
+//
+//				panel.remove(entirePanel);
+//				areaOfDay.remove(dayArea);
+//				today.add(Calendar.DATE, 1);
+//				getCalendarView(today);
+//				setDayArea(today);
+//				panel.add(entirePanel);
+//				panel.validate();
+//				panel.repaint();
+//				areaOfDay.add(dayArea);
+//				areaOfDay.validate();
+//				areaOfDay.repaint();
+//
+//			}
+//
+//		});
+//
+//		prev.addActionListener(new ActionListener() {
+//
+//			@Override
+//			public void actionPerformed(ActionEvent arg0) {
+//
+//				panel.remove(entirePanel);
+//				areaOfDay.remove(dayArea);
+//				today.add(Calendar.DATE, -1);
+//				getCalendarView(today);
+//				setDayArea(today);
+//				panel.add(entirePanel);
+//				panel.validate();
+//				panel.repaint();
+//				areaOfDay.add(dayArea);
+//				areaOfDay.validate();
+//				areaOfDay.repaint();
+//
+//			}
+//
+//		});
+//
+//		create.addActionListener(new ActionListener() {
+//
+//			@Override
+//			public void actionPerformed(ActionEvent arg0) {
+//				eventField.setVisible(true);
+//				eventField.validate();
+//				eventField.repaint();
+//
+//			}
+//		});
+
+		setLayout(new BorderLayout());
+
+		add(buttonPanel, BorderLayout.NORTH);
+		add(eventField, BorderLayout.SOUTH);
+		add(areaOfDay, BorderLayout.CENTER);
+
+		add(calendarPanel, BorderLayout.WEST);
+
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		setVisible(true);
+	}
+
+	private void createTopButtonsPanel() {
+		JPanel topButtonsPanel = new JPanel();
 		JButton create = new JButton("Create");
 		JButton prev = new JButton("Prev");
 		JButton next = new JButton("Next");
 		JButton quit = new JButton("Quit");
-		buttonPanel.add(create);
-		buttonPanel.add(prev);
-		buttonPanel.add(next);
-		buttonPanel.add(quit);
+		topButtonsPanel.add(create);
+		topButtonsPanel.add(prev);
+		topButtonsPanel.add(next);
+		topButtonsPanel.add(quit);
 		
-		JPanel panel = new JPanel();
-		GregorianCalendar today = new GregorianCalendar();
-		//JTextArea c = new JTextArea(printCalendar(today));
-		JComponent calendarGUI = getCalendarView(today);
-		//c.setFont(new Font("Verdana",1,12));
-		panel.add(calendarGUI);
-		
-		next.addActionListener(new ActionListener()
-		{
+		next.addActionListener(new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+
+				calendarPanel.remove(entirePanel);
+				areaOfDay.remove(dayArea);
 				today.add(Calendar.DATE, 1);
-			//	c.setText(printCalendar(today));
 				getCalendarView(today);
-			}
-		});
-		
-		prev.addActionListener(new ActionListener(){
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				
-				today.add(Calendar.DATE, -1);
-				//c.setText(printCalendar(today));
-				getCalendarView(today);
+				setDayArea(today);
+				calendarPanel.add(entirePanel);
+				calendarPanel.validate();
+				calendarPanel.repaint();
+				areaOfDay.add(dayArea);
+				areaOfDay.validate();
+				areaOfDay.repaint();
+
 			}
 
-			
 		});
-		
-		create.addActionListener(new ActionListener(){
-			
+
+		prev.addActionListener(new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
-				JComponent eventField = getEventField();
-				add(eventField,BorderLayout.SOUTH);
-			//	c.repaint();
-			
+
+				calendarPanel.remove(entirePanel);
+				areaOfDay.remove(dayArea);
+				today.add(Calendar.DATE, -1);
+				getCalendarView(today);
+				setDayArea(today);
+				calendarPanel.add(entirePanel);
+				calendarPanel.validate();
+				calendarPanel.repaint();
+				areaOfDay.add(dayArea);
+				areaOfDay.validate();
+				areaOfDay.repaint();
+
+			}
+
+		});
+
+		create.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				eventField.setVisible(true);
+				eventField.validate();
+				eventField.repaint();
+
 			}
 		});
 		
-		setLayout(new BorderLayout());
-		
-		add(buttonPanel, BorderLayout.NORTH);
-		
-		add(panel, BorderLayout.WEST);
-				
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		setVisible(true);		
+		buttonPanel = topButtonsPanel;
 	}
-	
-	public JComponent getEventField()
-	{
-		JPanel pane = new JPanel();
-		
-		JTextField title = new JTextField();
-		JTextField date = new JTextField();
-		JTextField timefrom = new JTextField();
-		JTextField timeTo = new JTextField();
+
+	public JComponent getEventField() {
+		JPanel panel = new JPanel();
+		GroupLayout layout = new GroupLayout(panel);
+		panel.setLayout(layout);
+		layout.setAutoCreateGaps(true);
+		layout.setAutoCreateContainerGaps(true);
+		GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
+
+		titleTextField = new JTextField();
+		titleTextField.setText("Enter event title");
+		dateTextFeild = new JTextField();
+		dateTextFeild.setText("Enter event date");
+		timeFromTextFeild = new JTextField();
+		timeFromTextFeild.setText("Enter event start time");
+		timeToTextField = new JTextField();
+		timeToTextField.setText("Enter event end time");
+		emptyEventFields();
+
 		JButton save = new JButton("Save");
-		
-		pane.setLayout(new BorderLayout());
-		pane.add(title, BorderLayout.NORTH);
-		pane.add(date, BorderLayout.WEST);
-		
-		pane.add(timefrom, BorderLayout.CENTER);
-		
-		pane.add(timeTo);
-		pane.add(save, BorderLayout.EAST);
-		
-		return pane;
+
+		hGroup.addGroup(layout.createParallelGroup().addComponent(titleTextField).addComponent(dateTextFeild));
+
+		hGroup.addGroup(layout.createParallelGroup().addComponent(timeFromTextFeild).addComponent(timeToTextField));
+		layout.setHorizontalGroup(hGroup);
+
+		GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
+		vGroup.addGroup(layout.createParallelGroup(Alignment.BASELINE).addComponent(titleTextField)
+				.addComponent(timeFromTextFeild));
+		vGroup.addGroup(layout.createParallelGroup(Alignment.BASELINE).addComponent(dateTextFeild)
+				.addComponent(timeToTextField));
+		layout.setVerticalGroup(vGroup);
+		JLabel eventDetails = new JLabel("Enter Event details in the specified fields");
+		eventDetails.setFont(new Font("Verdana", 1, 20));
+
+		JPanel entirePanel = new JPanel();
+		entirePanel.setLayout(new BorderLayout());
+		entirePanel.add(eventDetails, BorderLayout.NORTH);
+		entirePanel.add(panel, BorderLayout.CENTER);
+		entirePanel.add(save, BorderLayout.EAST);
+
+		return entirePanel;
 	}
-	
-	public JComponent getCalendarView(Calendar c)
-	{
+
+	public void getCalendarView(Calendar c) {
 		MONTHS[] arrayOfMonths = MONTHS.values();
 		int daysInMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+
 		JPanel pane = new JPanel();
 		pane.setLayout(new BorderLayout());
 		JLabel month = new JLabel("    " + arrayOfMonths[c.get(Calendar.MONTH)] + " " + c.get(Calendar.YEAR));
-		JLabel days = new JLabel("Su " + "Mo " + "Tu " + "We " + "Th " + "Fr " + "Sa");
+		month.setFont(new Font("Verdana", 1, 15));
 		pane.add(month, BorderLayout.NORTH);
-		pane.add(days, BorderLayout.CENTER);
-		
-		JPanel daysPanel = new JPanel();
-		daysPanel.setLayout(new GridLayout(5,7));
-		for(int i = 1; i<= daysInMonth; i++)
-		{
-			JButton day = new JButton(""+i);
-			daysPanel.add(day);
-		}
-		
-		JPanel entirePanel = new JPanel();
-		entirePanel.add(pane,BorderLayout.NORTH);
-		entirePanel.add(daysPanel, BorderLayout.SOUTH);
-		
-		return entirePanel;
-	}
-	
-	
-	public String printCalendar(Calendar c)
-	{
-		MONTHS[] arrayOfMonths = MONTHS.values();
-		int date = 1;
-		int daysInMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+
 		GregorianCalendar temp = new GregorianCalendar(c.get(Calendar.YEAR), c.get(Calendar.MONTH), 1);
 		int firstDayOfMonth = temp.get(Calendar.DAY_OF_WEEK) - 1;
-		
-		String cal = "";
-		cal = cal + "    " + arrayOfMonths[c.get(Calendar.MONTH)] + " " + c.get(Calendar.YEAR)+"\n";
-		cal = cal + "Su " + "Mo " + "Tu " + "We " + "Th " + "Fr " + "Sa" + "\n";
-		
-		System.out.println("    " + arrayOfMonths[c.get(Calendar.MONTH)] + " " + c.get(Calendar.YEAR));
-		System.out.println("Su " + "Mo " + "Tu " + "We " + "Th " + "Fr " + "Sa");
-
-		// Print initial empty days cells
+		ArrayList<JButton> empty = new ArrayList<>();
 		for (int i = 0; i < firstDayOfMonth; i++) {
-			System.out.print("   ");
-			cal = cal + "   ";
+			empty.add(new JButton(""));
 		}
-		
-		int i = firstDayOfMonth;
-		while (date <= daysInMonth) {
-			for (; i <= 6 && date <= daysInMonth; i++) {
-				String day = "";
-				if (date < 10) {
-					if (date == c.get(Calendar.DATE)) {
-						day = "[" + date + "]";
-					} else {
-						day = " " + date + " ";
-					}
 
-				} else {
-					if (date == c.get(Calendar.DATE)) {
-						day = "[" + date + "]";
-					} else {
-						day = date + " ";
-					}
+		ArrayList<String> daysString = getDaysList();
+		boolean added = false;
 
+		JPanel daysPanel = new JPanel();
+		daysPanel.setLayout(new GridLayout(6, 7));
+		for (int i = 0; i <= daysInMonth; i++) {
+			if (i == 7 || added == true) {
+				JButton dayButton = new JButton("" + i);
+				if (c.get(Calendar.DATE) == i) {
+					dayButton.setForeground(Color.RED);
+					lastClickedButton = dayButton;
 				}
-				System.out.print(day);
-				cal += day;
-				date++;
+				dayButton.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						c.set(Calendar.DATE, Integer.parseInt(dayButton.getActionCommand()));
+						areaOfDay.remove(dayArea);
+						setDayArea((GregorianCalendar) c);
+						areaOfDay.add(dayArea);
+						areaOfDay.validate();
+						areaOfDay.repaint();
+						if (lastClickedButton != null) {
+							lastClickedButton.setForeground(Color.BLACK);
+						}
+						dayButton.setForeground(Color.RED);
+						lastClickedButton = dayButton;
+					}
+
+				});
+				daysPanel.add(dayButton);
+			} else if (added == false) {
+				JButton day = new JButton(daysString.get(i));
+				daysPanel.add(day);
+				if (i == 6) {
+					added = true;
+					i = 0;
+					for (JButton b : empty) {
+						daysPanel.add(b);
+					}
+				}
 			}
-			i = 0;
-			System.out.println();
-			cal += "\n";
 
 		}
-		
-		
-		
-		return cal + "\n";
+
+		entirePanel = new JPanel();
+		entirePanel.setLayout(new BorderLayout());
+		entirePanel.add(pane, BorderLayout.CENTER);
+		entirePanel.add(daysPanel, BorderLayout.SOUTH);
+
+	}
+
+	public ArrayList<String> getDaysList() {
+		ArrayList<String> daysString = new ArrayList<>();
+		daysString.add("Su");
+		daysString.add("Mo");
+		daysString.add("Tu");
+		daysString.add("We");
+		daysString.add("Th");
+		daysString.add("Fr");
+		daysString.add("Sa");
+
+		return daysString;
+	}
+
+	public void setDayArea(GregorianCalendar date) {
+		// Getting the day info
+		DAYS[] dArray = DAYS.values();
+		int d = date.get(Calendar.DAY_OF_WEEK) - 1;
+		String day = dArray[d].name();
+		int month = date.get(Calendar.MONTH) + 1;
+		day += ", " + month + "/" + date.get(Calendar.DATE);
+		JLabel dayLabel = new JLabel(day);
+		dayLabel.setFont(new Font("Verdana", 1, 15));
+		JTextArea eventArea = new JTextArea(getDayEvents());
+
+		dayArea = new JPanel();
+		dayArea.setLayout(new BorderLayout());
+		dayArea.add(dayLabel, BorderLayout.NORTH);
+		dayArea.add(eventArea, BorderLayout.CENTER);
+	}
+
+	public String getDayEvents() {
+
+		return "Events go here";
+	}
+
+	public void emptyEventFields() {
+		titleTextField.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				titleTextField.setText("");
+			}
+		});
+
+		timeFromTextFeild.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				timeFromTextFeild.setText("");
+			}
+		});
+
+		timeToTextField.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				timeToTextField.setText("");
+			}
+		});
+
 	}
 }
