@@ -32,13 +32,13 @@ public class CalendarView extends JFrame {
 	GregorianCalendar today;
 	JPanel buttonPanel;
 	JPanel calendarPanel;
-	JPanel entirePanel;
+	JPanel panelOfCalendar;
 	JTextField titleTextField;
 	JTextField dateTextFeild;
 	JTextField timeFromTextFeild;
 	JTextField timeToTextField;
 	JComponent eventField;
-	JPanel areaOfDay;
+	JPanel eventDetailPanel;
 	JPanel dayArea;
 	JButton lastClickedButton = null;
 
@@ -52,18 +52,17 @@ public class CalendarView extends JFrame {
 
 		createTopButtonsPanel();
 
-
 		calendarPanel = new JPanel();
 		today = cal;
 		getCalendarView(today);
-		calendarPanel.add(entirePanel);
+		calendarPanel.add(panelOfCalendar);
 
 		eventField = getEventField();
 		eventField.setVisible(false);
 
-		areaOfDay = new JPanel();
+		eventDetailPanel = new JPanel();
 		setDayArea(today);
-		areaOfDay.add(dayArea);
+		eventDetailPanel.add(dayArea);
 
 //		next.addActionListener(new ActionListener() {
 //
@@ -122,7 +121,7 @@ public class CalendarView extends JFrame {
 
 		add(buttonPanel, BorderLayout.NORTH);
 		add(eventField, BorderLayout.SOUTH);
-		add(areaOfDay, BorderLayout.CENTER);
+		add(eventDetailPanel, BorderLayout.CENTER);
 
 		add(calendarPanel, BorderLayout.WEST);
 
@@ -147,17 +146,17 @@ public class CalendarView extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
-				calendarPanel.remove(entirePanel);
-				areaOfDay.remove(dayArea);
+				calendarPanel.remove(panelOfCalendar);
+				eventDetailPanel.remove(dayArea);
 				today.add(Calendar.DATE, 1);
 				getCalendarView(today);
 				setDayArea(today);
-				calendarPanel.add(entirePanel);
+				calendarPanel.add(panelOfCalendar);
 				calendarPanel.validate();
 				calendarPanel.repaint();
-				areaOfDay.add(dayArea);
-				areaOfDay.validate();
-				areaOfDay.repaint();
+				eventDetailPanel.add(dayArea);
+				eventDetailPanel.validate();
+				eventDetailPanel.repaint();
 
 			}
 
@@ -168,17 +167,17 @@ public class CalendarView extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
-				calendarPanel.remove(entirePanel);
-				areaOfDay.remove(dayArea);
+				calendarPanel.remove(panelOfCalendar);
+				eventDetailPanel.remove(dayArea);
 				today.add(Calendar.DATE, -1);
 				getCalendarView(today);
 				setDayArea(today);
-				calendarPanel.add(entirePanel);
+				calendarPanel.add(panelOfCalendar);
 				calendarPanel.validate();
 				calendarPanel.repaint();
-				areaOfDay.add(dayArea);
-				areaOfDay.validate();
-				areaOfDay.repaint();
+				eventDetailPanel.add(dayArea);
+				eventDetailPanel.validate();
+				eventDetailPanel.repaint();
 
 			}
 
@@ -276,11 +275,11 @@ public class CalendarView extends JFrame {
 					public void actionPerformed(ActionEvent e) {
 						// TODO Auto-generated method stub
 						c.set(Calendar.DATE, Integer.parseInt(dayButton.getActionCommand()));
-						areaOfDay.remove(dayArea);
+						eventDetailPanel.remove(dayArea);
 						setDayArea((GregorianCalendar) c);
-						areaOfDay.add(dayArea);
-						areaOfDay.validate();
-						areaOfDay.repaint();
+						eventDetailPanel.add(dayArea);
+						eventDetailPanel.validate();
+						eventDetailPanel.repaint();
 						if (lastClickedButton != null) {
 							lastClickedButton.setForeground(Color.BLACK);
 						}
@@ -304,10 +303,10 @@ public class CalendarView extends JFrame {
 
 		}
 
-		entirePanel = new JPanel();
-		entirePanel.setLayout(new BorderLayout());
-		entirePanel.add(pane, BorderLayout.CENTER);
-		entirePanel.add(daysPanel, BorderLayout.SOUTH);
+		panelOfCalendar = new JPanel();
+		panelOfCalendar.setLayout(new BorderLayout());
+		panelOfCalendar.add(pane, BorderLayout.CENTER);
+		panelOfCalendar.add(daysPanel, BorderLayout.SOUTH);
 
 	}
 
