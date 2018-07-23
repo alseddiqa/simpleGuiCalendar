@@ -51,11 +51,10 @@ public class CalendarView extends JFrame {
 		// TODO Auto-generated method stub
 
 		createTopButtonsPanel();
-
-		calendarPanel = new JPanel();
 		today = cal;
-		getCalendarView(today);
-		calendarPanel.add(panelOfCalendar);
+		createCalendarPanel();
+		
+	
 
 		eventField = getEventField();
 		eventField.setVisible(false);
@@ -63,59 +62,6 @@ public class CalendarView extends JFrame {
 		eventDetailPanel = new JPanel();
 		setDayArea(today);
 		eventDetailPanel.add(dayArea);
-
-//		next.addActionListener(new ActionListener() {
-//
-//			@Override
-//			public void actionPerformed(ActionEvent arg0) {
-//
-//				panel.remove(entirePanel);
-//				areaOfDay.remove(dayArea);
-//				today.add(Calendar.DATE, 1);
-//				getCalendarView(today);
-//				setDayArea(today);
-//				panel.add(entirePanel);
-//				panel.validate();
-//				panel.repaint();
-//				areaOfDay.add(dayArea);
-//				areaOfDay.validate();
-//				areaOfDay.repaint();
-//
-//			}
-//
-//		});
-//
-//		prev.addActionListener(new ActionListener() {
-//
-//			@Override
-//			public void actionPerformed(ActionEvent arg0) {
-//
-//				panel.remove(entirePanel);
-//				areaOfDay.remove(dayArea);
-//				today.add(Calendar.DATE, -1);
-//				getCalendarView(today);
-//				setDayArea(today);
-//				panel.add(entirePanel);
-//				panel.validate();
-//				panel.repaint();
-//				areaOfDay.add(dayArea);
-//				areaOfDay.validate();
-//				areaOfDay.repaint();
-//
-//			}
-//
-//		});
-//
-//		create.addActionListener(new ActionListener() {
-//
-//			@Override
-//			public void actionPerformed(ActionEvent arg0) {
-//				eventField.setVisible(true);
-//				eventField.validate();
-//				eventField.repaint();
-//
-//			}
-//		});
 
 		setLayout(new BorderLayout());
 
@@ -130,6 +76,14 @@ public class CalendarView extends JFrame {
 		setVisible(true);
 	}
 
+	private void createCalendarPanel() {
+
+		calendarPanel = new JPanel();
+		getCalendarView(today);
+		calendarPanel.add(panelOfCalendar);
+
+	}
+
 	private void createTopButtonsPanel() {
 		JPanel topButtonsPanel = new JPanel();
 		JButton create = new JButton("Create");
@@ -140,7 +94,7 @@ public class CalendarView extends JFrame {
 		topButtonsPanel.add(prev);
 		topButtonsPanel.add(next);
 		topButtonsPanel.add(quit);
-		
+
 		next.addActionListener(new ActionListener() {
 
 			@Override
@@ -193,7 +147,7 @@ public class CalendarView extends JFrame {
 
 			}
 		});
-		
+
 		buttonPanel = topButtonsPanel;
 	}
 
