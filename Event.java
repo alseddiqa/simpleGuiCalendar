@@ -143,16 +143,21 @@ public class Event implements Comparable<Event> {
 	 */
 	public String getEventStartTime() {
 		startTime.getInstance();
+		String am_pm = "am";
+		if(startTime.get(Calendar.AM_PM) == Calendar.PM)
+		{
+			am_pm = "pm";
+		}
 		int hr = startTime.get(Calendar.HOUR);
 		int min = startTime.get(Calendar.MINUTE);
 		if (min == 0 && hr == 0) {
-			return hr + "0:0" + min;
+			return hr + "0:0" + min + am_pm;
 		} else if (min == 0 && hr != 0) {
-			return hr + ":0" + min;
+			return hr + ":0" + min +  am_pm;
 		} else if (hr == 0 && min != 0) {
-			return hr + "0:" + min;
+			return hr + "0:" + min + am_pm;
 		}
-		String time = hr + ":" + min;
+		String time = hr + ":" + min + am_pm;
 		return time;
 	}
 
@@ -165,17 +170,24 @@ public class Event implements Comparable<Event> {
 		if (endTime == null) {
 			return null;
 		}
+		
+		String am_pm = "am";
+		if(endTime.get(Calendar.AM_PM) == Calendar.PM)
+		{
+			am_pm = "pm";
+		}
+		
 		endTime.getInstance();
 		int hr = endTime.get(Calendar.HOUR);
 		int min = endTime.get(Calendar.MINUTE);
 		if (min == 0 && hr == 0) {
-			return hr + "0:0" + min;
+			return hr + "0:0" + min + am_pm;
 		} else if (min == 0) {
-			return hr + ":0" + min;
+			return hr + ":0" + min +am_pm;
 		} else if (hr == 0) {
-			return hr + "0:" + min;
+			return hr + "0:" + min +am_pm;
 		}
-		String time = hr + ":" + min;
+		String time = hr + ":" + min +am_pm;
 		return time;
 	}
 
@@ -202,8 +214,10 @@ public class Event implements Comparable<Event> {
 	 *            - the event to check if two events are the same or not
 	 * @return true if event are same or false if events are diffrent
 	 */
-	public boolean equlas(Event e) {
-		if (this.compareTo(e) == 0) {
+	@Override
+	public boolean equals(Object e) {
+		Event event = (Event) e;
+		if (this.compareTo(event) == 0) {
 			return true;
 		}
 		return false;
@@ -212,24 +226,32 @@ public class Event implements Comparable<Event> {
 	@Override
 	public int compareTo(Event other) {
 
-		if (Integer.compare(this.startTime.get(Calendar.YEAR), other.startTime.get(Calendar.YEAR)) == 0) {
-			if (Integer.compare(this.startTime.get(Calendar.MONTH), other.startTime.get(Calendar.MONTH)) == 0) {
-				if (Integer.compare(this.startTime.get(Calendar.DATE), other.startTime.get(Calendar.DATE)) == 0) {
-					startTime.getInstance();
-					int hr1 = startTime.get(Calendar.HOUR);
-					int min1 = startTime.get(Calendar.MINUTE);
-					other.startTime.getInstance();
-					int hr2 = other.startTime.get(Calendar.HOUR);
-					int min2 = other.startTime.get(Calendar.MINUTE);
-					if (Integer.compare(hr1, hr2) == 0) {
-						return Integer.compare(min1, min2);
-					}
-					return Integer.compare(hr1, hr2);
-				}
-				return Integer.compare(this.startTime.get(Calendar.DATE), other.startTime.get(Calendar.DATE));
-			}
-			return Integer.compare(this.startTime.get(Calendar.MONTH), other.startTime.get(Calendar.MONTH));
+		int compare = Integer.compare(this.startTime.get(Calendar.YEAR), other.startTime.get(Calendar.YEAR));
+		if (compare != 0) {
+			return compare;
 		}
-		return Integer.compare(this.startTime.get(Calendar.YEAR), other.startTime.get(Calendar.YEAR));
+
+		compare = Integer.compare(this.startTime.get(Calendar.MONTH), other.startTime.get(Calendar.MONTH));
+		if (compare != 0) {
+			return compare;
+		}
+
+		compare = Integer.compare(this.startTime.get(Calendar.DATE), other.startTime.get(Calendar.DATE));
+		if (compare != 0) {
+			return compare;
+		}
+		int hr1 = startTime.get(Calendar.HOUR);
+		int hr2 = other.startTime.get(Calendar.HOUR);
+		compare = Integer.compare(hr1, hr2);
+
+		return compare;
+
+	}
+	
+	@Override
+	public String toString()
+	{
+		String eventDetail = getEventTitle() + " " + getEventDate() + " "+ getMonthOfEvent()+ " " + getEventStartTime()+ " " + getEventEndTime();
+		return eventDetail;
 	}
 }
